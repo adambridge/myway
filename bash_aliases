@@ -1,5 +1,5 @@
 alias ll='ls -l'
 alias la='ls -a'
 alias lla='ls -la'
-alias ltr='ls -ltr'
-alias latr='ls -latr'
+alias lltr='ls -ltr'
+alias llatr='ls -latr'
