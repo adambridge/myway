@@ -6,4 +6,5 @@ syntax on
 colorscheme slate
 set guifont=Consolas:h12:cANSI:qDRAFT
 set visualbell
+set number
 
