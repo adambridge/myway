@@ -1,5 +1,0 @@
-#!/bin/bash
-
-sudo apt-get install vim
-! test -e ~/.vimrc && cp ./vimrc ~/.vimrc
-! test -e ~/.bash_aliases && cp ./bash_aliases ~/.bash_aliases
