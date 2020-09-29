@@ -34,11 +34,7 @@ function update_config() {
     append_to_temp
     
     if is_bigger $TMP $ORG; then
-        if cp $TMP $TGT; then
-            echo Successfully wrote $TGT.
-        else
-            echo Failed to write $TGT.
-        fi
+        cp $TMP $TGT && { echo Successfully wrote $TGT. || echo Failed to write $TGT.; }
     elif diff $TMP $TGT; then
         echo Skipping $TGT, no changes required.
     else
