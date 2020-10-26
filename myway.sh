@@ -128,6 +128,10 @@ which man &> /dev/null || sudo apt-get install man-db
 if ! which docker &> /dev/null; then
     if [ ! -z $WSL_DISTRO_NAME ]; then
         DISTRO=${WSL_DISTRO_NAME,,}
+        if [ $DISTRO = "debian" ]; then
+            sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
+            sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+        fi
     fi
 
     if [ ! -z $DISTRO ]; then
@@ -147,6 +151,7 @@ if ! which docker &> /dev/null; then
            stable"
         sudo apt-get update
         sudo apt-get install docker-ce docker-ce-cli containerd.io
+        sudo service docker start
         sudo docker run hello-world
     else
         echo Not sure which distro this is, skipping docker install
