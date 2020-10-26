@@ -72,6 +72,7 @@ if [ ! -z $1 ]; then
         git config --global --unset user.email
         sudo apt-get purge vim git docker-ce docker-ce-cli containerd.io
         sudo apt-get autoremove
+        rm ~/bin/myway
         exit 0
     else
         echo usage: ./myway.sh [reset]
@@ -112,3 +113,8 @@ sudo add-apt-repository \
 sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io
 sudo docker run hello-world
+
+# Create user bin dir with link to script
+[ -d ~/bin ] || mkdir ~/bin
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+ln -fs $SCRIPTDIR/myway.sh ~/bin/myway
