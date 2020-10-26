@@ -126,23 +126,31 @@ which man &> /dev/null || sudo apt-get install man-db
 
 # Docker (https://docs.docker.com/engine/install/debian/)
 if ! which docker &> /dev/null; then
-    sudo apt-get remove docker docker-engine docker.io containerd runc
-    sudo apt-get update
-    sudo apt-get install \
-        apt-transport-https \
-        ca-certificates \
-        curl \
-        gnupg-agent \
-        software-properties-common
-    curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
-    sudo apt-key fingerprint 0EBFCD88
-    sudo add-apt-repository \
-       "deb [arch=amd64] https://download.docker.com/linux/debian \
-       $(lsb_release -cs) \
-       stable"
-    sudo apt-get update
-    sudo apt-get install docker-ce docker-ce-cli containerd.io
-    sudo docker run hello-world
+    if [ ! -z $WSL_DISTRO_NAME ]; then
+        DISTRO=${WSL_DISTRO_NAME,,}
+    fi
+
+    if [ ! -z $DISTRO ]; then
+        sudo apt-get remove docker docker-engine docker.io containerd runc
+        sudo apt-get update
+        sudo apt-get install \
+            apt-transport-https \
+            ca-certificates \
+            curl \
+            gnupg-agent \
+            software-properties-common
+        curl -fsSL https://download.docker.com/linux/$DISTRO/gpg | sudo apt-key add -
+        sudo apt-key fingerprint 0EBFCD88
+        sudo add-apt-repository \
+           "deb [arch=amd64] https://download.docker.com/linux/$DISTRO \
+           $(lsb_release -cs) \
+           stable"
+        sudo apt-get update
+        sudo apt-get install docker-ce docker-ce-cli containerd.io
+        sudo docker run hello-world
+    else
+        echo Not sure which distro this is, skipping docker install
+    fi
 fi
 
 # Return to original dir
