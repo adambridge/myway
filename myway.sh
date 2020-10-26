@@ -3,7 +3,7 @@ MYWAY_TAG="MYWAY-AUTO-INSTALL"
 BASH_COMMENT="#"
 VIM_COMMENT="\""
 
-function reset_config() {
+function restore_config() {
     local TGT=$1
     local TMP=$(mktemp /tmp/temp.XXXXXXXX)
 
@@ -63,19 +63,45 @@ function git_config() {
     fi
 }
 
+function restore() {
+    restore_config ~/.vimrc
+    restore_config ~/.bash_aliases
+    restore_config ~/.selected_editor
+    git config --global --unset user.name
+    git config --global --unset user.email
+}
+
+function first_time_setup() {
+    # Create config with path to script
+    mkdir ~/.myway
+    SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+    echo SCRIPTDIR=$SCRIPTDIR > ~/.myway/myway.config
+
+    # Create user bin dir with link to script
+    [ -d ~/bin ] || mkdir ~/bin
+    ln -fs $SCRIPTDIR/myway.sh ~/bin/myway
+}
+
+# Create myway config if running for first time
+if [ ! -d ~/.myway ]; then
+    first_time_setup
+    $SCRIPTDIR/myway.sh
+    exit 0
+fi
+
+# Read myway config and go to myway script dir and pull latest
+ORIGINALDIR=$(pwd)
+. ~/.myway/myway.config || { echo myway config not found && exit 1; }
+cd $SCRIPTDIR
+git pull
+
+# Restore files altered by myway script?
 if [ ! -z $1 ]; then
-    if [ $1 == "reset" ]; then
-        reset_config ~/.vimrc
-        reset_config ~/.bash_aliases
-        reset_config ~/.selected_editor
-        git config --global --unset user.name
-        git config --global --unset user.email
-        sudo apt-get purge vim git docker-ce docker-ce-cli containerd.io
-        sudo apt-get autoremove
-        rm ~/bin/myway
+    if [ $1 == "restore" ]; then
+        restore
         exit 0
     else
-        echo usage: ./myway.sh [reset]
+        echo usage: ./myway.sh [restore]
         exit 1
     fi
 fi
@@ -89,11 +115,14 @@ update_config ./bashrc ~/.bashrc $BASH_COMMENT
 update_config ./bash_aliases ~/.bash_aliases $BASH_COMMENT
 update_config ./selected_editor ~/.selected_editor $BASH_COMMENT
 
-# Disable bell? update_config ./inputrc /etc/inputrc
+# Disable bell? update_config $SCRIPTDIR/inputrc /etc/inputrc
 
 # Git
 git_config user.name "Enter git user.name: Your Name (no quotes):"
 git_config user.email "Enter git user.email: you@example.com:"
+
+# Man
+which man &> /dev/null || sudo apt-get install man-db
 
 # Docker (https://docs.docker.com/engine/install/debian/)
 if ! which docker &> /dev/null; then
@@ -116,7 +145,5 @@ if ! which docker &> /dev/null; then
     sudo docker run hello-world
 fi
 
-# Create user bin dir with link to script
-[ -d ~/bin ] || mkdir ~/bin
-SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-ln -fs $SCRIPTDIR/myway.sh ~/bin/myway
+# Return to original dir
+cd $ORIGINALDIR
