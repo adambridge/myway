@@ -84,6 +84,7 @@ which vim &> /dev/null || sudo apt-get install vim
 update_config ./vimrc ~/.vimrc $VIM_COMMENT
 
 # Bash
+update_config ./bashrc ~/.bashrc $BASH_COMMENT
 update_config ./bash_aliases ~/.bash_aliases $BASH_COMMENT
 update_config ./selected_editor ~/.selected_editor $BASH_COMMENT
 
