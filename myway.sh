@@ -124,6 +124,11 @@ git_config user.email "Enter git user.email: you@example.com:"
 # Man
 which man &> /dev/null || sudo apt-get install man-db
 
+# Systemd 
+if [ $WSL_DISTRO_NAME = "Debian" ]; then
+    sudo apt-get install systemd systemd-sysv
+fi
+
 # Docker (https://docs.docker.com/engine/install/debian/)
 if ! which docker &> /dev/null; then
     if [ ! -z $WSL_DISTRO_NAME ]; then
@@ -152,7 +157,8 @@ if ! which docker &> /dev/null; then
         sudo apt-get update
         sudo apt-get install docker-ce docker-ce-cli containerd.io
         sudo service docker start
-        sudo docker run hello-world
+        sudo usermod -aG docker $USER
+        docker run hello-world
     else
         echo Not sure which distro this is, skipping docker install
     fi
