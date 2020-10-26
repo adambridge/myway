@@ -96,7 +96,7 @@ git_config user.name "Enter git user.name: Your Name (no quotes):"
 git_config user.email "Enter git user.email: you@example.com:"
 
 # Docker (https://docs.docker.com/engine/install/debian/)
-if ! which docker; then
+if ! which docker &> /dev/null; then
     sudo apt-get remove docker docker-engine docker.io containerd runc
     sudo apt-get update
     sudo apt-get install \
