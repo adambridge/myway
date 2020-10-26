@@ -155,7 +155,8 @@ if ! which docker &> /dev/null; then
            $(lsb_release -cs) \
            stable"
         sudo apt-get update
-        sudo apt-get install docker-ce docker-ce-cli containerd.io
+        sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+        sudo update-rc.d docker enable
         sudo service docker start
         sudo usermod -aG docker $USER
         docker run hello-world
