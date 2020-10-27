@@ -93,6 +93,10 @@ ORIGINALDIR=$(pwd)
 cd $SCRIPTDIR
 git pull
 
+# Apt update/upgrade
+sudo apt update
+sudo apt -y upgrade
+
 # Restore files altered by myway script?
 if [ ! -z $1 ]; then
     if [ $1 == "restore" ]; then
