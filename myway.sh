@@ -82,6 +82,19 @@ function first_time_setup() {
     ln -fs $SCRIPTDIR/myway.sh ~/bin/myway
 }
 
+function build_vim() {
+    sudo apt-get install -y libncurses-dev
+    [ -d ~/projects ] || mkdir ~/projects
+    PREVDIR=$(pwd)
+    cd ~/projects
+    git clone https://github.com/vim/vim.git 
+    cd vim
+    ./configure --enable-python3interp
+    make
+    sudo make install
+    cd $PREVDIR
+}
+
 # Create myway config if running for first time
 if [ ! -d ~/.myway ]; then
     first_time_setup
@@ -110,7 +123,8 @@ if [ ! -z $1 ]; then
 fi
 
 # Vim
-which vim &> /dev/null || sudo apt-get install -y vim
+# which vim &> /dev/null || sudo apt-get install -y vim
+[ $(which vim) = "/usr/local/bin/vim" ] || build_vim
 update_config ./vimrc ~/.vimrc $VIM_COMMENT
 
 # Python pip
