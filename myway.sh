@@ -165,7 +165,6 @@ if ! which docker &> /dev/null; then
 
     if [ ! -z $DISTRO ]; then
         sudo apt-get remove docker docker-engine docker.io containerd runc
-        sudo apt-get update
         sudo apt-get install -y \
             apt-transport-https \
             ca-certificates \
@@ -178,7 +177,6 @@ if ! which docker &> /dev/null; then
            "deb [arch=amd64] https://download.docker.com/linux/$DISTRO \
            $(lsb_release -cs) \
            stable"
-        sudo apt-get update
         sudo apt-get install -y docker-ce docker-ce-cli containerd.io
         sudo update-rc.d docker enable
         sudo service docker start
