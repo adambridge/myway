@@ -107,13 +107,23 @@ if [ ! -z $1 ]; then
 fi
 
 # Vim
-which vim &> /dev/null || sudo apt-get install vim
+which vim &> /dev/null || sudo apt-get install -y vim
 update_config ./vimrc ~/.vimrc $VIM_COMMENT
+
+# Python
+sudo apt-get install -y python3-pip
 
 # Bash
 update_config ./bashrc ~/.bashrc $BASH_COMMENT
 update_config ./bash_aliases ~/.bash_aliases $BASH_COMMENT
 update_config ./selected_editor ~/.selected_editor $BASH_COMMENT
+
+# Zsh
+which zsh &> /dev/null || sudo apt-get install -y zsh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
+update_config ./zshrc ~/.zshrc $BASH_COMMENT
+update_config ./zprofile ~/.zprofile $BASH_COMMENT
 
 # Disable bell? update_config $SCRIPTDIR/inputrc /etc/inputrc
 
@@ -122,14 +132,9 @@ git_config user.name "Enter git user.name: Your Name (no quotes):"
 git_config user.email "Enter git user.email: you@example.com:"
 
 # Man
-which man &> /dev/null || sudo apt-get install man-db
+which man &> /dev/null || sudo apt-get install -y man-db
 
-# Systemd 
-if [ $WSL_DISTRO_NAME = "Debian" ]; then
-    sudo apt-get install systemd systemd-sysv
-fi
-
-# Docker (https://docs.docker.com/engine/install/debian/)
+# Docker
 if ! which docker &> /dev/null; then
     if [ ! -z $WSL_DISTRO_NAME ]; then
         DISTRO=${WSL_DISTRO_NAME,,}
@@ -142,7 +147,7 @@ if ! which docker &> /dev/null; then
     if [ ! -z $DISTRO ]; then
         sudo apt-get remove docker docker-engine docker.io containerd runc
         sudo apt-get update
-        sudo apt-get install \
+        sudo apt-get install -y \
             apt-transport-https \
             ca-certificates \
             curl \
