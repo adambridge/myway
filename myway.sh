@@ -100,11 +100,10 @@ if [ ! -d ~/.myway ]; then
     first_time_setup
 fi
 
-# Read myway config and go to myway script dir and pull latest
+# Read myway config and go to myway script dir
 ORIGINALDIR=$(pwd)
 . ~/.myway/myway.config || { echo myway config not found && exit 1; }
 cd $SCRIPTDIR
-git pull
 
 # Apt update/upgrade
 sudo apt update
