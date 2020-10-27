@@ -117,7 +117,7 @@ update_config ./vimrc ~/.vimrc $VIM_COMMENT
 sudo apt-get install -y python3-pip
 
 # Powerline
-pip install --user powerline-status
+pip3 install --user powerline-status
 
 # Bash
 update_config ./bashrc ~/.bashrc $BASH_COMMENT
