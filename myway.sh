@@ -124,7 +124,7 @@ fi
 # Vim
 # which vim &> /dev/null || sudo apt-get install -y vim
 [ $(which vim) = "/usr/local/bin/vim" ] || build_vim
-update_config ./vimrc ~/.vimrc $VIM_COMMENT
+update_config ./vimrc ~/.vimrc          # vimrc has " and # comment styles so provide directly in ./vimrc
 
 # Python pip
 sudo apt-get install -y python3-pip
