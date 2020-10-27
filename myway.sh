@@ -66,7 +66,10 @@ function git_config() {
 function restore() {
     restore_config ~/.vimrc
     restore_config ~/.bash_aliases
+    restore_config ~/.bashrc
     restore_config ~/.selected_editor
+    restore_config ~/.zprofile
+    restore_config ~/.zshrc
     git config --global --unset user.name
     git config --global --unset user.email
 }
