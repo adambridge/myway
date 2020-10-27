@@ -112,8 +112,11 @@ fi
 which vim &> /dev/null || sudo apt-get install -y vim
 update_config ./vimrc ~/.vimrc $VIM_COMMENT
 
-# Python
+# Python pip
 sudo apt-get install -y python3-pip
+
+# Powerline
+pip install --user powerline-status
 
 # Bash
 update_config ./bashrc ~/.bashrc $BASH_COMMENT
