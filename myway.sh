@@ -85,8 +85,6 @@ function first_time_setup() {
 # Create myway config if running for first time
 if [ ! -d ~/.myway ]; then
     first_time_setup
-    $SCRIPTDIR/myway.sh
-    exit 0
 fi
 
 # Read myway config and go to myway script dir and pull latest
