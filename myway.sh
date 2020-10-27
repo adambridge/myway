@@ -96,6 +96,7 @@ git pull
 # Apt update/upgrade
 sudo apt update
 sudo apt -y upgrade
+sudo apt autoremove
 
 # Restore files altered by myway script?
 if [ ! -z $1 ]; then
