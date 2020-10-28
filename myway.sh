@@ -125,7 +125,7 @@ if [ ! -z $1 ]; then
 fi
 
 # Vim
-read -p "Compile vim from source? y/n" COMPILE_VIM_YN
+read -p "Compile vim from source (y/n)? " COMPILE_VIM_YN
 if [ $COMPILE_VIM_YN = "y" ]; then
     [ $(which vim) = "/usr/local/bin/vim" ] || build_vim
 fi
@@ -160,7 +160,7 @@ git_config user.email "Enter git user.email: you@example.com:"
 which man &> /dev/null || sudo apt-get install -y man-db
 
 # Docker
-read -p "Install docker? y/n" DOCKER_YN
+read -p "Install docker (y/n)? " DOCKER_YN
 if [ $DOCKER_YN = "y" ] && ! which docker &> /dev/null; then
     if [ ! -z $WSL_DISTRO_NAME ]; then
         DISTRO=${WSL_DISTRO_NAME,,}
