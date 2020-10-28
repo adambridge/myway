@@ -136,7 +136,7 @@ update_config ./vimrc ~/.vimrc          # vimrc has " and # comment styles so pr
 sudo apt-get install -y python3-pip
 
 # Powerline
-pip3 install --user powerline-status
+pip3 install powerline-status
 
 # Bash
 update_config ./bashrc ~/.bashrc $BASH_COMMENT
