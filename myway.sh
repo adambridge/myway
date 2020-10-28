@@ -145,7 +145,7 @@ update_config ./selected_editor ~/.selected_editor $BASH_COMMENT
 
 # Zsh
 which zsh &> /dev/null || sudo apt-get install -y zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh) --unattended"
 git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
 update_config ./zshrc ~/.zshrc $BASH_COMMENT
 update_config ./zprofile ~/.zprofile $BASH_COMMENT
