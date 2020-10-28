@@ -1,5 +1,6 @@
 set -o vi
-~/local/bin/powerline-daemon -q
+~/.local/bin/powerline-daemon -q
+POWERLINE_CONFIG_COMMAND=~/.local/bin/powerline-config
 POWERLINE_BASH_CONTINUATION=1
 POWERLINE_BASH_SELECT=1
 . ~/.local/lib/python3.*/site-packages/powerline/bindings/bash/powerline.sh
