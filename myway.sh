@@ -125,8 +125,11 @@ if [ ! -z $1 ]; then
 fi
 
 # Vim
+read -p "Compile vim from source? y/n" -s COMPILE_VIM_YN
+if [ $COMPILE_VIM_YN = "y" ]; then
+    [ $(which vim) = "/usr/local/bin/vim" ] || build_vim
+fi
 # which vim &> /dev/null || sudo apt-get install -y vim
-[ $(which vim) = "/usr/local/bin/vim" ] || build_vim
 update_config ./vimrc ~/.vimrc          # vimrc has " and # comment styles so provide directly in ./vimrc
 
 # Python pip
@@ -157,7 +160,8 @@ git_config user.email "Enter git user.email: you@example.com:"
 which man &> /dev/null || sudo apt-get install -y man-db
 
 # Docker
-if ! which docker &> /dev/null; then
+read -p "Install docker? y/n" -s DOCKER_YN
+if [ $DOCKER_YN = "y" ] && ! which docker &> /dev/null; then
     if [ ! -z $WSL_DISTRO_NAME ]; then
         DISTRO=${WSL_DISTRO_NAME,,}
         if [ $DISTRO = "debian" ]; then
