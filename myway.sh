@@ -143,76 +143,80 @@ function git_setup() {
     fi
 }
 
-# Create myway config if running for first time
-if [ ! -d ~/.myway ]; then
-    first_time_setup
-fi
-
-# Read myway config and go to myway script dir
-ORIGINALDIR=$(pwd)
-. ~/.myway/myway.config || { echo myway config not found && exit 1; }
-cd $SCRIPTDIR
-
-# Apt update/upgrade
-sudo apt update
-sudo apt -y upgrade
-sudo apt autoremove
-
-# Restore files altered by myway script?
-if [ ! -z $1 ]; then
-    if [ $1 == "restore" ]; then
-        restore
-        exit 0
-    else
-        echo usage: ./myway.sh [restore]
-        exit 1
+function main() {
+    # Create myway config if running for first time
+    if [ ! -d ~/.myway ]; then
+        first_time_setup
     fi
-fi
 
-# Vim
-read -p "Compile vim from source (y/n)? " COMPILE_VIM_YN
-if [ $COMPILE_VIM_YN = "y" ]; then
-    [ $(which vim) = "/usr/local/bin/vim" ] || build_vim
-fi
-# which vim &> /dev/null || sudo apt-get install -y vim
-update_config ./vimrc ~/.vimrc          # vimrc has " and # comment styles so provide directly in ./vimrc
+    # Read myway config and go to myway script dir
+    ORIGINALDIR=$(pwd)
+    . ~/.myway/myway.config || { echo myway config not found && exit 1; }
+    cd $SCRIPTDIR
 
-# Python pip
-sudo apt-get install -y python3-pip
+    # Apt update/upgrade
+    sudo apt update
+    sudo apt -y upgrade
+    sudo apt autoremove
 
-# Powerline
-pip3 install powerline-status
+    # Restore files altered by myway script?
+    if [ ! -z $1 ]; then
+        if [ $1 == "restore" ]; then
+            restore
+            exit 0
+        else
+            echo usage: ./myway.sh [restore]
+            exit 1
+        fi
+    fi
 
-# Bash
-update_config ./bashrc ~/.bashrc $BASH_COMMENT
-update_config ./bash_aliases ~/.bash_aliases $BASH_COMMENT
-update_config ./selected_editor ~/.selected_editor $BASH_COMMENT
+    # Vim
+    read -p "Compile vim from source (y/n)? " COMPILE_VIM_YN
+    if [ $COMPILE_VIM_YN = "y" ]; then
+        [ $(which vim) = "/usr/local/bin/vim" ] || build_vim
+    fi
+    # which vim &> /dev/null || sudo apt-get install -y vim
+    update_config ./vimrc ~/.vimrc          # vimrc has " and # comment styles so provide directly in ./vimrc
 
-# Zsh
-which zsh &> /dev/null || sudo apt-get install -y zsh
-update_config ./zshrc ~/.zshrc $BASH_COMMENT
-update_config ./zprofile ~/.zprofile $BASH_COMMENT
-sudo usermod --shell $(which zsh) $USER
+    # Python pip
+    sudo apt-get install -y python3-pip
 
-# Disable bell? update_config $SCRIPTDIR/inputrc /etc/inputrc
+    # Powerline
+    pip3 install powerline-status
 
-# Git
-git_setup
+    # Bash
+    update_config ./bashrc ~/.bashrc $BASH_COMMENT
+    update_config ./bash_aliases ~/.bash_aliases $BASH_COMMENT
+    update_config ./selected_editor ~/.selected_editor $BASH_COMMENT
 
-# Man
-which man &> /dev/null || sudo apt-get install -y man-db
+    # Zsh
+    which zsh &> /dev/null || sudo apt-get install -y zsh
+    update_config ./zshrc ~/.zshrc $BASH_COMMENT
+    update_config ./zprofile ~/.zprofile $BASH_COMMENT
+    sudo usermod --shell $(which zsh) $USER
 
-# Docker
-read -p "Install docker (y/n)? " DOCKER_YN
-if [ $DOCKER_YN = "y" ] && ! which docker &> /dev/null; then
-    install_docker
-fi
+    # Disable bell? update_config $SCRIPTDIR/inputrc /etc/inputrc
 
-# Return to original dir
-cd $ORIGINALDIR
-if [ $GIT_SSH_REMINDER_YN = "y" ]; then
-    echo A new ssh key was created, copy the below and upload it to github
-    cat ~/.ssh/id_rsa.pub
-fi
+    # Git
+    git_setup
 
-exec zsh -l
+    # Man
+    which man &> /dev/null || sudo apt-get install -y man-db
+
+    # Docker
+    read -p "Install docker (y/n)? " DOCKER_YN
+    if [ $DOCKER_YN = "y" ] && ! which docker &> /dev/null; then
+        install_docker
+    fi
+
+    # Return to original dir
+    cd $ORIGINALDIR
+    if [ $GIT_SSH_REMINDER_YN = "y" ]; then
+        echo A new ssh key was created, copy the below and upload it to github
+        cat ~/.ssh/id_rsa.pub
+    fi
+
+    exec zsh -l
+}
+
+main "$@"
