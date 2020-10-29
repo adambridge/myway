@@ -175,7 +175,7 @@ if [ $COMPILE_VIM_YN = "y" ]; then
     [ $(which vim) = "/usr/local/bin/vim" ] || build_vim
 fi
 # which vim &> /dev/null || sudo apt-get install -y vim
-update_config ./vimrc ~/.vimrc           # vimrc has " and # comment styles so provide directly in ./vimrc
+update_config ./vimrc ~/.vimrc          # vimrc has " and # comment styles so provide directly in ./vimrc
 
 # Python pip
 sudo apt-get install -y python3-pip
