@@ -98,6 +98,39 @@ function build_vim() {
     cd $PREVDIR
 }
 
+function install_docker() {
+    if [ ! -z $WSL_DISTRO_NAME ]; then
+        DISTRO=${WSL_DISTRO_NAME,,}
+        if [ $DISTRO = "debian" ]; then
+            sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
+            sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+        fi
+    fi
+
+    if [ ! -z $DISTRO ]; then
+        sudo apt-get remove docker docker-engine docker.io containerd runc
+        sudo apt-get install -y \
+            apt-transport-https \
+            ca-certificates \
+            curl \
+            gnupg-agent \
+            software-properties-common
+        curl -fsSL https://download.docker.com/linux/$DISTRO/gpg | sudo apt-key add -
+        sudo apt-key fingerprint 0EBFCD88
+        sudo add-apt-repository \
+           "deb [arch=amd64] https://download.docker.com/linux/$DISTRO \
+           $(lsb_release -cs) \
+           stable"
+        sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+        sudo update-rc.d docker enable
+        sudo service docker start
+        sudo usermod -aG docker $USER
+        docker run hello-world
+    else
+        echo Not sure which distro this is, skipping docker install
+    fi
+}
+
 # Create myway config if running for first time
 if [ ! -d ~/.myway ]; then
     first_time_setup
@@ -162,36 +195,7 @@ which man &> /dev/null || sudo apt-get install -y man-db
 # Docker
 read -p "Install docker (y/n)? " DOCKER_YN
 if [ $DOCKER_YN = "y" ] && ! which docker &> /dev/null; then
-    if [ ! -z $WSL_DISTRO_NAME ]; then
-        DISTRO=${WSL_DISTRO_NAME,,}
-        if [ $DISTRO = "debian" ]; then
-            sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
-            sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
-        fi
-    fi
-
-    if [ ! -z $DISTRO ]; then
-        sudo apt-get remove docker docker-engine docker.io containerd runc
-        sudo apt-get install -y \
-            apt-transport-https \
-            ca-certificates \
-            curl \
-            gnupg-agent \
-            software-properties-common
-        curl -fsSL https://download.docker.com/linux/$DISTRO/gpg | sudo apt-key add -
-        sudo apt-key fingerprint 0EBFCD88
-        sudo add-apt-repository \
-           "deb [arch=amd64] https://download.docker.com/linux/$DISTRO \
-           $(lsb_release -cs) \
-           stable"
-        sudo apt-get install -y docker-ce docker-ce-cli containerd.io
-        sudo update-rc.d docker enable
-        sudo service docker start
-        sudo usermod -aG docker $USER
-        docker run hello-world
-    else
-        echo Not sure which distro this is, skipping docker install
-    fi
+    install_docker
 fi
 
 # Return to original dir
