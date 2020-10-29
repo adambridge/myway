@@ -214,3 +214,5 @@ if [ $GIT_SSH_REMINDER_YN = "y" ]; then
     echo A new ssh key was created, copy the below and upload it to github
     cat ~/.ssh/id_rsa.pub
 fi
+
+exec zsh -l
