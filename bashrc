@@ -1,4 +1,4 @@
-set -o vi
+set -o emacs
 OLDPATH="$PATH"
 which powerline-daemon>/dev/null || export PATH=~/.local/bin:"$PATH"
 powerline-daemon -q
