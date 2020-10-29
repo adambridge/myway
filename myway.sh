@@ -182,7 +182,7 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/mas
 git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
 update_config ./zshrc ~/.zshrc $BASH_COMMENT
 update_config ./zprofile ~/.zprofile $BASH_COMMENT
-usermod --shell $(which zsh) $USER
+sudo usermod --shell $(which zsh) $USER
 
 # Disable bell? update_config $SCRIPTDIR/inputrc /etc/inputrc
 
