@@ -2,6 +2,7 @@
 MYWAY_TAG="MYWAY-AUTO-INSTALL"
 BASH_COMMENT="#"
 VIM_COMMENT="\""
+GIT_SSH_REMINDER_YN="n"
 
 function restore_config() {
     local TGT=$1
@@ -131,6 +132,17 @@ function install_docker() {
     fi
 }
 
+function git_setup() {
+    git_config user.name "Enter git user.name: Your Name (no quotes):"
+    git_config user.email "Enter git user.email: you@example.com:"
+    if [ ! -f ~/.ssh/id_rsa ]; then
+        ssh-keygen -t rsa -b 4096 -C $(git config --get user.email) -f ~/.ssh/id_rsa
+        eval "$(ssh-agent -s)"
+        ssh-add  ~/.ssh/id_rsa
+        GIT_SSH_REMINDER_YN="y"
+    fi
+}
+
 # Create myway config if running for first time
 if [ ! -d ~/.myway ]; then
     first_time_setup
@@ -187,8 +199,7 @@ sudo usermod --shell $(which zsh) $USER
 # Disable bell? update_config $SCRIPTDIR/inputrc /etc/inputrc
 
 # Git
-git_config user.name "Enter git user.name: Your Name (no quotes):"
-git_config user.email "Enter git user.email: you@example.com:"
+git_setup
 
 # Man
 which man &> /dev/null || sudo apt-get install -y man-db
@@ -201,3 +212,7 @@ fi
 
 # Return to original dir
 cd $ORIGINALDIR
+if [ $GIT_SSH_REMINDER_YN = "y" ]; then
+    echo A new ssh key was created, copy the below and upload it to github
+    cat ~/.ssh/id_rsa.pub
+fi
