@@ -1,3 +1,4 @@
+set -o vi
 . ~/.local/lib/python3.*/site-packages/powerline/bindings/zsh/powerline.zsh
 #ZSH_THEME="powerlevel9k/powerlevel9k"
 #POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(vcs dir rbenv)
