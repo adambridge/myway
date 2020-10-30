@@ -85,19 +85,6 @@ function first_time_setup() {
     ln -fs $SCRIPTDIR/myway.sh ~/bin/myway
 }
 
-function build_vim() {
-    sudo apt-get install -y libncurses-dev
-    [ -d ~/projects ] || mkdir ~/projects
-    PREVDIR=$(pwd)
-    cd ~/projects
-    git clone https://github.com/vim/vim.git 
-    cd vim
-    ./configure --enable-python3interp
-    make
-    sudo make install
-    cd $PREVDIR
-}
-
 function install_docker() {
     if [ ! -z $WSL_DISTRO_NAME ]; then
         DISTRO=${WSL_DISTRO_NAME,,}
@@ -189,12 +176,14 @@ function main() {
     fi
 
     # Vim
-    read -p "Compile vim from source (y/n)? " COMPILE_VIM_YN
-    if [ "$COMPILE_VIM_YN" = "y" ]; then
-        [ $(which vim) = "/usr/local/bin/vim" ] || build_vim
+    if which vim &> /dev/null; then
+        if [ "$WSL_DISTRO_NAME" = "Debian" ]; then
+            sudo apt-get install -y vim-nox;
+        else
+            sudo apt-get install -y vim;
+        fi
     fi
-    # which vim &> /dev/null || sudo apt-get install -y vim
-    update_config ./vimrc ~/.vimrc          # vimrc has " and # comment styles so provide directly in ./vimrc
+    update_config ./vimrc ~/.vimrc    # vimrc has " and # comments, provided directly in ./vimrc
 
     # Python pip
     sudo apt-get install -y python3-pip
