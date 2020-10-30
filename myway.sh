@@ -2,7 +2,6 @@
 MYWAY_TAG="MYWAY-AUTO-INSTALL"
 BASH_COMMENT="#"
 VIM_COMMENT="\""
-GIT_SSH_REMINDER_YN="n"
 
 function restore_config() {
     local TGT=$1
@@ -135,11 +134,30 @@ function install_docker() {
 function git_setup() {
     git_config user.name "Enter git user.name: Your Name (no quotes):"
     git_config user.email "Enter git user.email: you@example.com:"
-    if [ ! -f ~/.ssh/id_rsa ]; then
-        ssh-keygen -t rsa -b 4096 -C $(git config --get user.email) -f ~/.ssh/id_rsa
+    if ! ssh -T git@gitub.com; then
+        PASSPHRASE_1=NOTSET1
+        PASSPHRASE_2=NOTSET2
+        while [ "$PASSPHRASE_1" != "$PASSPHRASE_2" ]; do
+            read -s -p "Enter passphrase for github ssh key:" PASSPHRASE_1; echo
+            read -s -p "Confirm passphrase for github ssh key:" PASSPHRASE_2; echo
+            [ "$PASSPHRASE_1" == "$PASSPHRASE_2" ] || echo Passphrases did not match
+        done
+        ssh-keygen -t rsa -b 4096 -N "$PASSPHRASE_1" -C $(git config --get user.email) -f ~/.ssh/id_rsa
         eval "$(ssh-agent -s)"
-        ssh-add  ~/.ssh/id_rsa
-        GIT_SSH_REMINDER_YN="y"
+        which expect || sudo apt-get install -y expect
+        expect << EOF
+            spawn ssh-add ~/.ssh/id_rsa
+            expect "Enter passphrase"
+            send "$PASSPHARASE_1\r"
+            expect eof
+EOF
+        YELLOW=$(printf '\033[33m')
+        GREEN=$(printf '\033[32m')
+        RESET=$(printf '\033[m')
+        echo ${YELLOW}Go to https://github.com/settings/ssh/new and enter new ssh key:${GREEN}
+        cat ~/.ssh/id_rsa.pub
+        echo $RESET
+        read -p "Press enter to continue..." OK
     fi
 }
 
@@ -172,7 +190,7 @@ function main() {
 
     # Vim
     read -p "Compile vim from source (y/n)? " COMPILE_VIM_YN
-    if [ $COMPILE_VIM_YN = "y" ]; then
+    if [ "$COMPILE_VIM_YN" = "y" ]; then
         [ $(which vim) = "/usr/local/bin/vim" ] || build_vim
     fi
     # which vim &> /dev/null || sudo apt-get install -y vim
@@ -205,18 +223,15 @@ function main() {
 
     # Docker
     read -p "Install docker (y/n)? " DOCKER_YN
-    if [ $DOCKER_YN = "y" ] && ! which docker &> /dev/null; then
+    if [ "$DOCKER_YN" = "y" ] && ! which docker &> /dev/null; then
         install_docker
     fi
 
     # Return to original dir
     cd $ORIGINALDIR
-    if [ $GIT_SSH_REMINDER_YN = "y" ]; then
-        echo A new ssh key was created, copy the below and upload it to github
-        cat ~/.ssh/id_rsa.pub
-    fi
 
-    exec zsh -l
+    read -p "Launch a new zsh (y/n)? " EXEC_ZSH_YN
+    [ "$EXEC_ZSH_YN" = "y" ] && exec zsh -l
 }
 
 main "$@"
