@@ -2,6 +2,9 @@
 MYWAY_TAG="MYWAY-AUTO-INSTALL"
 BASH_COMMENT="#"
 VIM_COMMENT="\""
+YELLOW=$(printf '\033[33m')
+GREEN=$(printf '\033[32m')
+RESET=$(printf '\033[m')
 
 function restore_config() {
     local TGT=$1
@@ -121,26 +124,25 @@ function install_docker() {
 function git_setup() {
     git_config user.name "Enter git user.name: Your Name (no quotes):"
     git_config user.email "Enter git user.email: you@example.com:"
-    if ! ssh -T git@gitub.com; then
+    echo ${YELLOW}Testing github ssh access...${RESET}
+    ssh -T git@github.com
+    GIT_SSH_OK=$?
+    if ! [ $GIT_SSH_OK = 1 ]; then
         PASSPHRASE_1=NOTSET1
         PASSPHRASE_2=NOTSET2
         while [ "$PASSPHRASE_1" != "$PASSPHRASE_2" ]; do
-            read -s -p "Enter passphrase for github ssh key:" PASSPHRASE_1; echo
-            read -s -p "Confirm passphrase for github ssh key:" PASSPHRASE_2; echo
+            read -s -p "Enter passphrase for new github ssh key:" PASSPHRASE_1; echo
+            read -s -p "Confirm passphrase for new github ssh key:" PASSPHRASE_2; echo
             [ "$PASSPHRASE_1" == "$PASSPHRASE_2" ] || echo Passphrases did not match
         done
         ssh-keygen -t rsa -b 4096 -N "$PASSPHRASE_1" -C $(git config --get user.email) -f ~/.ssh/id_rsa
         eval "$(ssh-agent -s)"
-        which expect || sudo apt-get install -y expect
         expect << EOF
             spawn ssh-add ~/.ssh/id_rsa
             expect "Enter passphrase"
             send "$PASSPHARASE_1\r"
             expect eof
 EOF
-        YELLOW=$(printf '\033[33m')
-        GREEN=$(printf '\033[32m')
-        RESET=$(printf '\033[m')
         echo ${YELLOW}Go to https://github.com/settings/ssh/new and enter new ssh key:${GREEN}
         cat ~/.ssh/id_rsa.pub
         echo $RESET
@@ -163,8 +165,7 @@ function main() {
     cd $SCRIPTDIR
 
     # Apt update/upgrade
-    sudo apt update
-    sudo apt -y upgrade
+    sudo apt update sudo apt -y upgrade
     sudo apt autoremove
 
     # Restore files altered by myway script?
