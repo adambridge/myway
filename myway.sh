@@ -145,6 +145,9 @@ EOF
         cat ~/.ssh/id_rsa.pub
         echo $RESET
         read -p "Press enter to continue..." OK
+        URL=$(git config --get remote.origin.url)
+        REPO=${URL#*:}
+        [ -z $REPO ] || git remote set-url git@github.com:$REPO
     fi
 }
 
