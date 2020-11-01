@@ -149,7 +149,7 @@ EOF
         read -p "Press enter to continue..." OK
         URL=$(git config --get remote.origin.url)
         REPO=${URL#*:}
-        [ -z $REPO ] || git remote set-url git@github.com:$REPO
+        [ -z $REPO ] || git remote set-url origin git@github.com:$REPO
     fi
 }
 
