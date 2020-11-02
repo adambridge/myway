@@ -141,7 +141,7 @@ function git_setup() {
         echo $RESET
         read -p "Press enter to continue..." OK
         URL=$(git config --get remote.origin.url)
-        REPO=${URL#*:}
+        REPO=${URL##*:}
         [ -z $REPO ] || git remote set-url origin git@github.com:$REPO
     fi
 }
