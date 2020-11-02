@@ -158,7 +158,8 @@ function main() {
     cd $SCRIPTDIR
 
     # Apt update/upgrade
-    sudo apt update sudo apt -y upgrade
+    sudo apt update
+    sudo apt -y upgrade
     sudo apt autoremove
 
     # Restore files altered by myway script?
