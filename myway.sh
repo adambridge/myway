@@ -131,18 +131,11 @@ function git_setup() {
         PASSPHRASE_1=NOTSET1
         PASSPHRASE_2=NOTSET2
         while [ "$PASSPHRASE_1" != "$PASSPHRASE_2" ]; do
-            read -s -p "Enter passphrase for new github ssh key:" PASSPHRASE_1; echo
+            read -s -p "Enter passphrase for new github ssh key (leave blank for none):" PASSPHRASE_1; echo
             read -s -p "Confirm passphrase for new github ssh key:" PASSPHRASE_2; echo
             [ "$PASSPHRASE_1" == "$PASSPHRASE_2" ] || echo Passphrases did not match
         done
         ssh-keygen -t rsa -b 4096 -N "$PASSPHRASE_1" -C $(git config --get user.email) -f ~/.ssh/id_rsa
-        eval "$(ssh-agent -s)"
-        expect << EOF
-            spawn ssh-add ~/.ssh/id_rsa
-            expect "Enter passphrase"
-            send "$PASSPHARASE_1\r"
-            expect eof
-EOF
         echo ${YELLOW}Go to https://github.com/settings/ssh/new and enter new ssh key:${GREEN}
         cat ~/.ssh/id_rsa.pub
         echo $RESET
