@@ -140,8 +140,10 @@ function git_setup() {
         cat ~/.ssh/id_rsa.pub
         echo $RESET
         read -p "Press enter to continue..." OK
-        URL=$(git config --get remote.origin.url)
-        REPO=${URL##*:}
+    fi
+    URL=$(git config --get remote.origin.url)
+    if [ ${URL:0:5} = "https" ]; then
+        REPO=${URL#https://*github.com/}
         [ -z $REPO ] || git remote set-url origin git@github.com:$REPO
     fi
 }
