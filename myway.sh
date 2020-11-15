@@ -174,7 +174,7 @@ function main() {
     fi
 
     # Vim
-    if which vim &> /dev/null; then
+    if ! which vim &> /dev/null; then
         if [ "$WSL_DISTRO_NAME" = "Debian" ]; then
             sudo apt-get install -y vim-nox;
         else
