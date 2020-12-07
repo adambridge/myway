@@ -140,8 +140,10 @@ function git_setup() {
         cat ~/.ssh/id_rsa.pub
         echo $RESET
         read -p "Press enter to continue..." OK
-        URL=$(git config --get remote.origin.url)
-        REPO=${URL#*:}
+    fi
+    URL=$(git config --get remote.origin.url)
+    if [ ${URL:0:5} = "https" ]; then
+        REPO=${URL#https://*github.com/}
         [ -z $REPO ] || git remote set-url origin git@github.com:$REPO
     fi
 }
@@ -158,7 +160,8 @@ function main() {
     cd $SCRIPTDIR
 
     # Apt update/upgrade
-    sudo apt update sudo apt -y upgrade
+    sudo apt update
+    sudo apt -y upgrade
     sudo apt autoremove
 
     # Restore files altered by myway script?
@@ -173,7 +176,7 @@ function main() {
     fi
 
     # Vim
-    if which vim &> /dev/null; then
+    if ! which vim &> /dev/null; then
         if [ "$WSL_DISTRO_NAME" = "Debian" ]; then
             sudo apt-get install -y vim-nox;
         else
