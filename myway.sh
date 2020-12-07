@@ -90,7 +90,7 @@ function first_time_setup() {
 
 function install_docker() {
     if [ ! -z $WSL_DISTRO_NAME ]; then
-        DISTRO=${WSL_DISTRO_NAME,,}
+        DISTRO=` echo "${WSL_DISTRO_NAME}" | tr "[:upper:]" "[:lower:]"`
         if [ $DISTRO = "debian" ]; then
             sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
             sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
