@@ -141,9 +141,11 @@ function git_setup() {
         echo $RESET
         read -p "Press enter to continue..." OK
     fi
+    # This bit is per repo and only works on the current repo
+    # Should it be a seperate script?
     URL=$(git config --get remote.origin.url)
-    if [ ${URL:0:5} = "https" ]; then
-        REPO=${URL#https://*github.com/}
+    if [ ${URL:0:4} = "http" ]; then
+        REPO=${URL#http*://*github.com/}
         [ -z $REPO ] || git remote set-url origin git@github.com:$REPO
     fi
 }
