@@ -124,6 +124,7 @@ function install_docker() {
 function git_setup() {
     git_config user.name "Enter git user.name: Your Name (no quotes):"
     git_config user.email "Enter git user.email: you@example.com:"
+    git config --global core.editor vim
     echo ${YELLOW}Testing github ssh access...${RESET}
     ssh -T git@github.com
     GIT_SSH_OK=$?
