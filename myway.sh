@@ -90,7 +90,7 @@ function first_time_setup() {
 
 function install_docker() {
     if [ ! -z $WSL_DISTRO_NAME ]; then
-        DISTRO=${WSL_DISTRO_NAME,,}
+        DISTRO=` echo "${WSL_DISTRO_NAME}" | tr "[:upper:]" "[:lower:]"`
         if [ $DISTRO = "debian" ]; then
             sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
             sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
@@ -105,12 +105,12 @@ function install_docker() {
             curl \
             gnupg-agent \
             software-properties-common
-        curl -fsSL https://download.docker.com/linux/$DISTRO/gpg | sudo apt-key add -
-        sudo apt-key fingerprint 0EBFCD88
-        sudo add-apt-repository \
-           "deb [arch=amd64] https://download.docker.com/linux/$DISTRO \
-           $(lsb_release -cs) \
-           stable"
+        DOCKER_REPO=https://download.docker.com/linux/$DISTRO
+        if ! grep $DOCKER_REPO /etc/apt/sources.list; then
+            curl -fsSL $DOCKER_REPO/gpg | sudo apt-key add -
+            sudo apt-key fingerprint 0EBFCD88
+            sudo add-apt-repository "deb [arch=amd64] $DOCKER_REPO $(lsb_release -cs) stable"
+        fi
         sudo apt-get install -y docker-ce docker-ce-cli containerd.io
         sudo update-rc.d docker enable
         sudo service docker start
