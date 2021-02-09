@@ -122,6 +122,10 @@ function install_docker() {
 }
 
 function git_setup() {
+    cp $SCRIPTDIR/git2ssh.sh $SCRIPTDIR/git2https.sh ~/bin
+    ln -fs ~/bin/git2ssh.sh ~/bin/git2ssh
+    ln -fs ~/bin/git2https.sh ~/bin/git2https
+
     git_config user.name "Enter git user.name: Your Name (no quotes):"
     git_config user.email "Enter git user.email: you@example.com:"
     echo ${YELLOW}Testing github ssh access...${RESET}
@@ -141,11 +145,7 @@ function git_setup() {
         echo $RESET
         read -p "Press enter to continue..." OK
     fi
-    URL=$(git config --get remote.origin.url)
-    if [ ${URL:0:5} = "https" ]; then
-        REPO=${URL#https://*github.com/}
-        [ -z $REPO ] || git remote set-url origin git@github.com:$REPO
-    fi
+    ~/bin/git2ssh.sh
 }
 
 function main() {
